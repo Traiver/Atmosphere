@@ -64,24 +64,6 @@ static const instruction_t MAKE_KERNEL_HOOK_NAME(300, proc_id_recv)[] = {0xF9405
 /*
     mov w10, w23
     lsl x10, x10, #2
-    ldr x10, [x27, x10]
-    mov x9, #0x0000ffffffffffff
-    and x8, x10, x9
-    mov x9, #0xffff000000000000
-    and x10, x10, x9
-    mov x9, #0xfffe000000000000
-    cmp x10, x9
-    beq #12
-    ldr x10, [sp,#0x80]
-    ldr x8, [x10,#0x2b0]
-    ldr x10, [sp,#0x80]
-*/
-static const uint8_t MAKE_KERNEL_PATTERN_NAME(500, proc_id_send)[] = {0xEA, 0x43, 0x40, 0xF9, 0x48, 0x59, 0x41, 0xF9, 0xE9, 0x03, 0x17, 0x2A, 0x29, 0xF5, 0x7E, 0xD3};
-static const instruction_t MAKE_KERNEL_HOOK_NAME(500, proc_id_send)[] = {0x2A1703EA, 0xD37EF54A, 0xF86A6B6A, 0x92FFFFE9, 0x8A090148, 0xD2FFFFE9, 0x8A09014A, 0xD2FFFFC9, 0xEB09015F, 0x54000060, 0xF94043EA, 0xF9415948, 0xF94043EA};
-/*  
-/*  
-    mov w10, w23
-    lsl x10, x10, #2
     ldr x10, [x28, x10]
     mov x9, #0x0000ffffffffffff
     and x8, x10, x9
