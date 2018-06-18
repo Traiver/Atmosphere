@@ -28,6 +28,58 @@ typedef struct {
 
 /* Patch definitions. */
 /*  
+    mov w10, w24
+    lsl x10, x10, #2
+    ldr x10, [x28, x10]
+    mov x9, #0x0000ffffffffffff
+    and x8, x10, x9
+    mov x9, #0xffff000000000000
+    and x10, x10, x9
+    mov x9, #0xfffe000000000000
+    cmp x10, x9
+    beq #12
+    ldr x10, [sp,#0x90]
+    ldr x8, [x10,#0x2a8]
+    ldr x10, [sp,#0x90]
+*/
+static const uint8_t MAKE_KERNEL_PATTERN_NAME(300, proc_id_send)[] = {0xEA, 0x4B, 0x40, 0xF9, 0x48, 0x55, 0x41, 0xF9, 0xE9, 0x03, 0x18, 0x2A, 0x29, 0xF5, 0x7E, 0xD3};
+static const instruction_t MAKE_KERNEL_HOOK_NAME(300, proc_id_send)[] = {0x2A1803EA, 0xD37EF54A, 0xF86A6B8A, 0x92FFFFE9, 0x8A090148, 0xD2FFFFE9, 0x8A09014A, 0xD2FFFFC9, 0xEB09015F, 0x54000060, 0xF9404BEA, 0xF9415548, 0xF9404BEA};
+/*  
+    ldr x13, [sp,#0xa8]
+    mov w10, w15
+    lsl x10, x10, #2
+    ldr x10, [x13, x10]
+    mov x9, #0x0000ffffffffffff
+    and x8, x10, x9
+    mov x9, #0xffff000000000000
+    and x10, x10, x9
+    mov x9, #0xfffe000000000000
+    cmp x10, x9
+    beq #12
+    ldr x8, [sp,#0xe0]
+    ldr x8, [x8,#0x2a8]
+*/
+static const uint8_t MAKE_KERNEL_PATTERN_NAME(300, proc_id_recv)[] = {0xE8, 0x5B, 0x40, 0xF9, 0x08, 0x55, 0x41, 0xF9, 0xE9, 0x03, 0x0F, 0x2A, 0x29, 0xF5, 0x7E, 0xD3};
+static const instruction_t MAKE_KERNEL_HOOK_NAME(300, proc_id_recv)[] = {0xF94057ED, 0x2A0F03EA, 0xD37EF54A, 0xF86A69AA, 0x92FFFFE9, 0x8A090148, 0xD2FFFFE9, 0x8A09014A, 0xD2FFFFC9, 0xEB09015F, 0x54000060, 0xF94073E8, 0xF9415508};
+/*
+    mov w10, w23
+    lsl x10, x10, #2
+    ldr x10, [x27, x10]
+    mov x9, #0x0000ffffffffffff
+    and x8, x10, x9
+    mov x9, #0xffff000000000000
+    and x10, x10, x9
+    mov x9, #0xfffe000000000000
+    cmp x10, x9
+    beq #12
+    ldr x10, [sp,#0x80]
+    ldr x8, [x10,#0x2b0]
+    ldr x10, [sp,#0x80]
+*/
+static const uint8_t MAKE_KERNEL_PATTERN_NAME(500, proc_id_send)[] = {0xEA, 0x43, 0x40, 0xF9, 0x48, 0x59, 0x41, 0xF9, 0xE9, 0x03, 0x17, 0x2A, 0x29, 0xF5, 0x7E, 0xD3};
+static const instruction_t MAKE_KERNEL_HOOK_NAME(500, proc_id_send)[] = {0x2A1703EA, 0xD37EF54A, 0xF86A6B6A, 0x92FFFFE9, 0x8A090148, 0xD2FFFFE9, 0x8A09014A, 0xD2FFFFC9, 0xEB09015F, 0x54000060, 0xF94043EA, 0xF9415948, 0xF94043EA};
+/*  
+/*  
     mov w10, w23
     lsl x10, x10, #2
     ldr x10, [x28, x10]
@@ -104,10 +156,40 @@ static const kernel_hook_t g_kernel_hooks_200[] = {
     /* TODO */
 };
 static const kernel_hook_t g_kernel_hooks_300[] = {
-    /* TODO */
+    {   /* Send Message Process ID Patch. */
+        .pattern_size = 0x10,
+        .pattern = MAKE_KERNEL_PATTERN_NAME(300, proc_id_send),
+        .pattern_hook_offset = 0x0,
+        .payload_num_instructions = 13,
+        .branch_back_offset = 0x8,
+        .payload = MAKE_KERNEL_HOOK_NAME(300, proc_id_send)
+    },
+    {   /* Receive Message Process ID Patch. */
+        .pattern_size = 0x10,
+        .pattern = MAKE_KERNEL_PATTERN_NAME(300, proc_id_recv),
+        .pattern_hook_offset = 0x0,
+        .payload_num_instructions = 13,
+        .branch_back_offset = 0x8,
+        .payload = MAKE_KERNEL_HOOK_NAME(300, proc_id_recv)
+    }
 };
 static const kernel_hook_t g_kernel_hooks_302[] = {
-    /* TODO */
+    {   /* Send Message Process ID Patch. */
+        .pattern_size = 0x10,
+        .pattern = MAKE_KERNEL_PATTERN_NAME(302, proc_id_send),
+        .pattern_hook_offset = 0x0,
+        .payload_num_instructions = 13,
+        .branch_back_offset = 0x8,
+        .payload = MAKE_KERNEL_HOOK_NAME(302, proc_id_send)
+    },
+    {   /* Receive Message Process ID Patch. */
+        .pattern_size = 0x10,
+        .pattern = MAKE_KERNEL_PATTERN_NAME(302, proc_id_recv),
+        .pattern_hook_offset = 0x0,
+        .payload_num_instructions = 13,
+        .branch_back_offset = 0x8,
+        .payload = MAKE_KERNEL_HOOK_NAME(302, proc_id_recv)
+    }
 };
 static const kernel_hook_t g_kernel_hooks_400[] = {
     {   /* Send Message Process ID Patch. */
@@ -161,12 +243,12 @@ static const kernel_info_t g_kernel_infos[] = {
     },
     {   /* 3.0.0. */
         /* TODO */
-        .free_code_space_offset = 0,
+        .free_code_space_offset = 0x4C870
         KERNEL_HOOKS(300)
     },
     {   /* 3.0.2. */
         /* TODO */
-        .free_code_space_offset = 0,
+        .free_code_space_offset = 0x4C870
         KERNEL_HOOKS(302)
     },
     {   /* 4.0.0. */
